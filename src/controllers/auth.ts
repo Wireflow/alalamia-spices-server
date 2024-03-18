@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateUserSchema } from "../types/user";
+import { UserSchema } from "../types/user";
 import prisma from "../prisma/connection";
 import authServiceImpl from "../services/authService";
 
@@ -7,7 +7,7 @@ const authService = authServiceImpl();
 
 const signInUser = async (req: Request, res: Response) => {
   try {
-    const user = CreateUserSchema.safeParse(req.body);
+    const user = UserSchema.safeParse(req.body);
     if (!user.success) return res.json("Invalid Request Data").status(405);
 
     const existingUser = await prisma.user.findFirst({

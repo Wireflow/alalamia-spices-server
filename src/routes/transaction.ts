@@ -1,0 +1,13 @@
+import express, { Router } from "express";
+import {
+  createTransaction,
+  deleteTransaction,
+  getAllTransactions,
+} from "../controllers/transaction";
+const router: Router = express.Router();
+
+router.get("/transactions", getAllTransactions);
+router.post("/transaction", createTransaction);
+router.delete("/transaction/:id", deleteTransaction);
+
+export default router;

@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 import prisma from "../prisma/connection";
-import { CreateUserSchema } from "../types/user";
+import { UserSchema } from "../types/user";
 import authServiceImpl from "../services/authService";
 
 const authService = authServiceImpl();
@@ -16,7 +16,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const user = CreateUserSchema.safeParse(req.body);
+    const user = UserSchema.safeParse(req.body);
     if (!user.success) return res.json("Invalid Request Data").status(405);
 
     const hashedPassword = authService.encryptPassword(user.data.password);

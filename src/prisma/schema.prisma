@@ -32,18 +32,19 @@ model Member {
   state       String
   zipCode     String
   phoneNumber String
+  owedBalance Int?
   Transaction Transaction[]
 }
 
 model Transaction {
   id            String        @id @default(cuid())
-  totalAmount   Int
+  totalAmount   Float
   orderNumber   Int           @unique @default(autoincrement())
   paymentMethod PaymentMethod
-  Member        Member        @relation(fields: [memberId], references: [id])
+  Member        Member?       @relation(fields: [memberId], references: [id])
+  memberId      String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-  memberId      String
 
   @@index([memberId])
 }
@@ -61,7 +62,9 @@ model Product {
   name              String
   description       String?
   price             String
+  boxQuantity       Int?
   quantity          Int?
+  grams             Int?
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   ProductCategory   ProductCategory? @relation(fields: [productCategoryId], references: [id])
