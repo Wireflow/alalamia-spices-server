@@ -32,7 +32,7 @@ const authService = () => {
     try {
       const data = {
         time: Date(),
-        payload,
+        ...payload,
       };
       const token = jwt.sign(data, config.jwtSecret, {
         expiresIn: 56000,

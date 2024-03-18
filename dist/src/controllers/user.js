@@ -12,13 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getAllUsers = void 0;
 const connection_1 = __importDefault(require("../prisma/connection"));
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield connection_1.default.user.findMany();
+        console.log(users);
         res.json(users).status(200);
     }
     catch (error) {
         res.json(error).status(500);
     }
 });
+exports.getAllUsers = getAllUsers;
