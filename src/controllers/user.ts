@@ -8,16 +8,16 @@ const authService = authServiceImpl();
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany();
-    res.json(users).status(200);
+    res.status(200).json(users);
   } catch (error) {
-    res.json(error).status(500);
+    res.status(500).json(error);
   }
 };
 
 const createUser = async (req: Request, res: Response) => {
   try {
     const user = UserSchema.safeParse(req.body);
-    if (!user.success) return res.json("Invalid Request Data").status(405);
+    if (!user.success) return res.status(405).json("Invalid Request Data");
 
     const hashedPassword = authService.encryptPassword(user.data.password);
 
@@ -28,9 +28,9 @@ const createUser = async (req: Request, res: Response) => {
       },
     });
 
-    res.json(newUser).status(200);
+    res.status(200).json(newUser);
   } catch (error) {
-    res.json(error).status(500);
+    res.status(500).json(error);
   }
 };
 
