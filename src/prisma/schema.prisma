@@ -32,7 +32,7 @@ model Member {
   state       String
   zipCode     String
   phoneNumber String
-  owedBalance Int?
+  owedBalance Float?
   Transaction Transaction[]
 }
 
@@ -61,7 +61,7 @@ model Product {
   id                String           @id @default(cuid())
   name              String
   description       String?
-  price             String
+  price             Float
   boxQuantity       Int?
   quantity          Int?
   grams             Int?
@@ -77,9 +77,10 @@ model Product {
 }
 
 model Supplier {
-  id        String    @id @default(cuid())
-  name      String
-  Products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          String    @id @default(cuid())
+  name        String
+  owedBalance Float?
+  Products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
