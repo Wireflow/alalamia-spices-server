@@ -11,7 +11,7 @@ const createMember = async (req: Request, res: Response) => {
   try {
     const member = MemberSchema.safeParse(req.body);
 
-    if (!member.success) return res.json("Invalid Request Data").status(405);
+    if (!member.success) return res.status(405).json("Invalid Request Data");
 
     const newMember = await prisma.member.create({
       data: {

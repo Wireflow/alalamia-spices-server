@@ -20,11 +20,10 @@ const createTransaction = async (req: Request, res: Response) => {
 
     const newTransaction = await prisma.transaction.create({
       data: {
-        totalAmount: Number(transaction.data.totalAmount),
-        paymentMethod: transaction.data.paymentMethod,
-        memberId: transaction.data.memberId
-          ? transaction.data.memberId
-          : undefined,
+        ...transaction.data,
+        products: {
+          connect: [...transaction.data.products],
+        },
       },
     });
 

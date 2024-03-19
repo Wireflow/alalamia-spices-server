@@ -8,6 +8,7 @@ import AuthRoute from "./routes/auth";
 import TransactionRoute from "./routes/transaction";
 import MemberRoute from "./routes/member";
 import ProductRoute from "./routes/product";
+import SupplierRoute from "./routes/supplier";
 
 // Middlewares
 import authMiddleware from "./middlewares/authMiddleware";
@@ -23,6 +24,7 @@ app.use("/api", AuthRoute);
 app.use("/api", authMiddleware, TransactionRoute);
 app.use("/api", authMiddleware, MemberRoute);
 app.use("/api", authMiddleware, ProductRoute);
+app.use("/api", authMiddleware, SupplierRoute);
 
 const server = app.listen(3000, () =>
   console.log(`🚀 Server ready at: http://localhost:3000`)

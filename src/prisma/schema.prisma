@@ -45,6 +45,8 @@ model Transaction {
   memberId      String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+  transactionId String?
+  products      Product[]     @relation("TransactionToProduct")
 
   @@index([memberId])
 }
@@ -71,6 +73,7 @@ model Product {
   productCategoryId String?
   Supplier          Supplier?        @relation(fields: [supplierId], references: [id])
   supplierId        String?
+  transactions      Transaction[]    @relation("TransactionToProduct")
 
   @@index([productCategoryId])
   @@index([supplierId])

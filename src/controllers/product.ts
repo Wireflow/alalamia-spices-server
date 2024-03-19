@@ -7,7 +7,7 @@ const createProduct = async (req: Request, res: Response) => {
   try {
     const product = ProductSchema.safeParse(req.body);
 
-    if (!product.success) return res.json("Invalid Request Data").status(405);
+    if (!product.success) return res.status(405).json("Invalid Request Data");
 
     const newMember = await prisma.product.create({
       data: {
