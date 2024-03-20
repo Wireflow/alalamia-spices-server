@@ -30,10 +30,10 @@ app.use("/api", authMiddleware, MemberRoute);
 app.use("/api", authMiddleware, ProductRoute);
 app.use("/api", authMiddleware, SupplierRoute);
 
+app.use("/", (req, res) => res.json("authorized use only"));
+
 /* Middleware Error Handler */
 app.use(errorHandlingMiddleware);
 
 /* Web Server */
-const server = app.listen(config.port, () =>
-  console.log(`🚀 Server ready at: http://localhost:3000`)
-);
+const server = app.listen(config.port, () => console.log(`🚀 Server ready`));

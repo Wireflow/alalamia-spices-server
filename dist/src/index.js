@@ -1,9 +1,7 @@
 "use strict";
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
@@ -17,12 +15,8 @@ const member_1 = __importDefault(require("./routes/member"));
 const product_1 = __importDefault(require("./routes/product"));
 const supplier_1 = __importDefault(require("./routes/supplier"));
 /* Middlewares */
-const authMiddleware_1 = __importDefault(
-  require("./middlewares/authMiddleware")
-);
-const errorHandlingMiddleware_1 = __importDefault(
-  require("./middlewares/errorHandlingMiddleware")
-);
+const authMiddleware_1 = __importDefault(require("./middlewares/authMiddleware"));
+const errorHandlingMiddleware_1 = __importDefault(require("./middlewares/errorHandlingMiddleware"));
 const app = (0, express_1.default)();
 /* Web Server Configuration */
 app.use(express_1.default.json());
@@ -35,9 +29,8 @@ app.use("/api", authMiddleware_1.default, transaction_1.default);
 app.use("/api", authMiddleware_1.default, member_1.default);
 app.use("/api", authMiddleware_1.default, product_1.default);
 app.use("/api", authMiddleware_1.default, supplier_1.default);
+app.use("/", (req, res) => res.json("authorized use only"));
 /* Middleware Error Handler */
 app.use(errorHandlingMiddleware_1.default);
 /* Web Server */
-const server = app.listen(config_1.default.port, () =>
-  console.log(`🚀 Server ready`)
-);
+const server = app.listen(config_1.default.port, () => console.log(`🚀 Server ready`));
