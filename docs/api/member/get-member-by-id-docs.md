@@ -19,7 +19,8 @@
           "state": "New York",
           "zipCode": "123456",
           "phoneNumber": "9188182182",
-          "owedBalance": 123.49
+          "owedBalance": 123.49,
+          "transactions": []
         }
       ]
     }

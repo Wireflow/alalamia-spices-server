@@ -12,38 +12,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
-const connection_1 = __importDefault(require("../prisma/connection"));
+exports.signInUser = void 0;
 const user_1 = require("../types/user");
+const connection_1 = __importDefault(require("../prisma/connection"));
 const authService_1 = __importDefault(require("../services/authService"));
 const authService = (0, authService_1.default)();
-const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const users = yield connection_1.default.user.findMany();
-        res.status(200).json(users);
-    }
-    catch (error) {
-        res.status(500).json(error);
-    }
-});
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const signInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = user_1.UserSchema.safeParse(req.body);
         if (!user.success)
-            return res.status(405).json({ message: "Invalid Request Data" });
-        const hashedPassword = authService.encryptPassword(user.data.password);
-        const newUser = yield connection_1.default.user.create({
-            data: {
+            return res.json({ message: "Invalid Request Data" }).status(405);
+        const existingUser = yield connection_1.default.user.findFirst({
+            where: {
                 email: user.data.email,
-                password: hashedPassword,
             },
         });
-        res
-            .status(200)
-            .json({ message: "User created successfully", data: newUser });
+        if (!existingUser)
+            return res.json({ message: "User does not exist" }).status(401);
+        const isPasswordMatch = authService.compare(user.data.password, existingUser.password);
+        if (!isPasswordMatch)
+            return res.json({ message: "Unauthorized Request" }).status(401);
+        const token = authService.generateToken({ id: existingUser.id });
+        res.status(200).json({
+            token,
+            auth: true,
+            session: {
+                email: existingUser.email,
+                id: existingUser.id,
+            },
+        });
     }
     catch (error) {
-        res.status(500).json(error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 });
-exports.createUser = createUser;
+exports.signInUser = signInUser;
