@@ -6,13 +6,15 @@ import {
   getMemberByPhone,
   getAllMembers,
   deleteMember,
+  getMemberById,
 } from "../controllers/member";
 const router: Router = express.Router();
 
 router.post("/member", createMember);
-router.get("/member/get-by-address", getMemberByAddress);
-router.get("/member/get-by-phone", getMemberByPhone);
+router.post("/member/get-by-address", getMemberByAddress);
+router.post("/member/get-by-phone", getMemberByPhone);
 router.get("/members", getAllMembers);
+router.get("/member/:id", getMemberById);
 router.put("/member/:id", updateMember);
 router.delete("/member/:id", deleteMember);
 

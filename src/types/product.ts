@@ -7,6 +7,6 @@ export const ProductSchema = z.object({
   boxQuantity: z.number().optional(),
   quantity: z.number().optional(),
   grams: z.number().optional(),
+  sku: z.string().optional(),
   supplierId: z.string().optional(),
-  categoryId: z.string().optional(),
 });

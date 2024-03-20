@@ -11,7 +11,8 @@ const createMember = async (req: Request, res: Response) => {
   try {
     const member = MemberSchema.safeParse(req.body);
 
-    if (!member.success) return res.status(405).json("Invalid Request Data");
+    if (!member.success)
+      return res.status(405).json({ message: "Invalid Request Data" });
 
     const newMember = await prisma.member.create({
       data: {
@@ -20,7 +21,34 @@ const createMember = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(newMember);
+    res
+      .status(200)
+      .json({ message: "Member created successfully", data: newMember });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const getMemberById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { transactions } = req.query;
+    if (!id) return res.status(405).json({ message: "Invalid Member Request" });
+
+    const member = await prisma.member.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        transaction: transactions ? true : false,
+      },
+    });
+
+    if (!member) return res.status(404).json({ message: "Member not found" });
+
+    res
+      .status(200)
+      .json({ message: "Member found successfully", data: member });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -31,9 +59,10 @@ const updateMember = async (req: Request, res: Response) => {
     const member = req.body;
     const { id } = req.params;
 
-    if (!member || !id) return res.json("Invalid Request Data").status(405);
+    if (!member || !id)
+      return res.status(405).json({ message: "Invalid Request Data" });
 
-    const newMember = await prisma.member.update({
+    const updatedMember = await prisma.member.update({
       where: { id },
       data: {
         ...member,
@@ -41,7 +70,7 @@ const updateMember = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(newMember);
+    res.status(200).json({ message: "Member updated successfully" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -51,7 +80,8 @@ const getMemberByPhone = async (req: Request, res: Response) => {
   try {
     const member = MemberPhoneNumber.safeParse(req.body);
 
-    if (!member.success) return res.json("Invalid Request Data").status(405);
+    if (!member.success)
+      return res.status(405).json({ message: "Invalid Request Data" });
 
     const foundUser = await prisma.member.findMany({
       where: {
@@ -61,7 +91,12 @@ const getMemberByPhone = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(foundUser);
+    if (!foundUser)
+      return res.status(404).json({ message: "Member not found" });
+
+    res
+      .status(200)
+      .json({ message: "Member found successfully", data: foundUser });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -71,7 +106,8 @@ const getMemberByAddress = async (req: Request, res: Response) => {
   try {
     const member = MemberAddress.safeParse(req.body);
 
-    if (!member.success) return res.json("Invalid Request Data").status(405);
+    if (!member.success)
+      return res.status(405).json({ message: "Invalid Request Data" });
 
     const foundUser = await prisma.member.findMany({
       where: {
@@ -81,7 +117,12 @@ const getMemberByAddress = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(foundUser);
+    if (!foundUser)
+      return res.status(404).json({ message: "Member not found" });
+
+    res
+      .status(200)
+      .json({ message: "Member found successfully", data: foundUser });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -99,7 +140,10 @@ const getAllMembers = async (req: Request, res: Response) => {
       take,
       skip,
     });
-    res.status(200).json(members);
+
+    res
+      .status(200)
+      .json({ message: "Members got successfully", data: members });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -108,7 +152,8 @@ const getAllMembers = async (req: Request, res: Response) => {
 const deleteMember = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) return res.status(405).json("Invalid Transaction Request");
+    if (!id)
+      return res.status(405).json({ message: "Invalid Transaction Request" });
 
     const deleteMember = await prisma.member.delete({
       where: {
@@ -116,7 +161,10 @@ const deleteMember = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(deleteMember);
+    if (!deleteMember)
+      return res.status(404).json({ message: "Member not found" });
+
+    res.status(200).json({ message: "Member deleted successfully" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -129,4 +177,5 @@ export {
   getMemberByPhone,
   getAllMembers,
   deleteMember,
+  getMemberById,
 };

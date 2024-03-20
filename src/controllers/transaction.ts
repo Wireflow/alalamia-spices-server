@@ -4,8 +4,16 @@ import { TransactionSchema } from "../types/transaction";
 
 const getAllTransactions = async (req: Request, res: Response) => {
   try {
-    const transactions = await prisma.transaction.findMany();
-    res.status(200).json(transactions);
+    const { products } = req.query;
+    const transactions = await prisma.transaction.findMany({
+      include: {
+        products: products ? true : false,
+      },
+    });
+
+    res
+      .status(200)
+      .json({ message: "Transactions got successfully", data: transactions });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -16,7 +24,7 @@ const createTransaction = async (req: Request, res: Response) => {
     const transaction = TransactionSchema.safeParse(req.body);
 
     if (!transaction.success)
-      return res.status(405).json("Invalid Transaction Request");
+      return res.status(405).json({ message: "Invalid Transaction Request" });
 
     const newTransaction = await prisma.transaction.create({
       data: {
@@ -27,7 +35,10 @@ const createTransaction = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(newTransaction);
+    res.status(200).json({
+      message: "Transaction created successfully",
+      data: newTransaction,
+    });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -36,7 +47,8 @@ const createTransaction = async (req: Request, res: Response) => {
 const deleteTransaction = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) return res.status(405).json("Invalid Transaction Request");
+    if (!id)
+      return res.status(405).json({ message: "Invalid Transaction Request" });
 
     const deletedTransaction = await prisma.transaction.delete({
       where: {
@@ -44,7 +56,10 @@ const deleteTransaction = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(deletedTransaction);
+    if (!deleteTransaction)
+      return res.status(404).json({ message: "Transaction not found" });
+
+    res.status(200).json({ message: "Deleted transaction successfully" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -53,15 +68,25 @@ const deleteTransaction = async (req: Request, res: Response) => {
 const getTransactionById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) return res.status(405).json("Invalid Transaction Request");
+    const { products } = req.query;
+    if (!id)
+      return res.status(405).json({ message: "Invalid Transaction Request" });
 
     const transaction = await prisma.transaction.findFirst({
       where: {
         id,
       },
+      include: {
+        products: products ? true : false,
+      },
     });
 
-    res.status(200).json(transaction);
+    if (!transaction)
+      return res.status(404).json({ message: "Transaction not found" });
+
+    res
+      .status(200)
+      .json({ message: "Transaction found successfully", data: transaction });
   } catch (error) {
     res.status(500).json(error);
   }

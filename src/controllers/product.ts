@@ -7,17 +7,19 @@ const createProduct = async (req: Request, res: Response) => {
   try {
     const product = ProductSchema.safeParse(req.body);
 
-    if (!product.success) return res.status(405).json("Invalid Request Data");
+    if (!product.success)
+      return res.status(405).json({ message: "Invalid Request Data" });
 
-    const newMember = await prisma.product.create({
+    const newProduct = await prisma.product.create({
       data: {
         ...product.data,
-        productCategoryId: product.data.categoryId,
         supplierId: product.data.supplierId,
       },
     });
 
-    res.status(200).json(newMember);
+    res
+      .status(200)
+      .json({ message: "Product created successfully", data: newProduct });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -28,7 +30,8 @@ const updateProduct = async (req: Request, res: Response) => {
     const product = req.body;
     const { id } = req.params;
 
-    if (!product || !id) return res.json("Invalid Request Data").status(405);
+    if (!product || !id)
+      return res.status(405).json({ message: "Invalid Request Data" });
 
     const updatedProduct = await prisma.product.update({
       where: { id },
@@ -37,7 +40,10 @@ const updateProduct = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(updatedProduct);
+    if (!updateProduct)
+      return res.status(404).json({ message: "Product not found" });
+
+    res.status(200).json({ message: "Product updated successfully" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -56,7 +62,9 @@ const getAllProducts = async (req: Request, res: Response) => {
       skip,
     });
 
-    res.status(200).json(products);
+    res
+      .status(200)
+      .json({ message: "Products got successfully", data: products });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -65,7 +73,8 @@ const getAllProducts = async (req: Request, res: Response) => {
 const getProductById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) return res.status(405).json("Invalid Product Request");
+    if (!id)
+      return res.status(405).json({ message: "Invalid Product Request" });
 
     const product = await prisma.product.findFirst({
       where: {
@@ -73,7 +82,11 @@ const getProductById = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(product);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    res
+      .status(200)
+      .json({ message: "Product found successfully", data: product });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -82,7 +95,8 @@ const getProductById = async (req: Request, res: Response) => {
 const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) return res.status(405).json("Invalid Transaction Request");
+    if (!id)
+      return res.status(405).json({ message: "Invalid Product Request" });
 
     const deletedProduct = await prisma.product.delete({
       where: {
@@ -90,7 +104,10 @@ const deleteProduct = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(deletedProduct);
+    if (!deletedProduct)
+      return res.status(404).json({ message: "Product not found" });
+
+    res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     res.status(500).json(error);
   }

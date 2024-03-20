@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/connection";
 import { SupplierSchema } from "../types/supplier";
-import calculatePagination from "../utils/calculatePagination";
+import { boolean } from "zod";
 
 const createSupplier = async (req: Request, res: Response) => {
   try {
     const supplier = SupplierSchema.safeParse(req.body);
 
-    if (!supplier.success) return res.status(405).json("Invalid Request Data");
+    if (!supplier.success)
+      return res.status(405).json({ message: "Invalid Request Data" });
 
     const newSupplier = await prisma.supplier.create({
       data: {
@@ -15,7 +16,9 @@ const createSupplier = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(newSupplier);
+    res
+      .status(200)
+      .json({ message: "Supplier created successfully", data: newSupplier });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -26,7 +29,8 @@ const updateSupplier = async (req: Request, res: Response) => {
     const supplier = req.body;
     const { id } = req.params;
 
-    if (!supplier || !id) return res.json("Invalid Request Data").status(405);
+    if (!supplier || !id)
+      return res.status(405).json({ message: "Invalid Request Data" });
 
     const updatedSupplier = await prisma.supplier.update({
       where: { id },
@@ -35,7 +39,9 @@ const updateSupplier = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(updatedSupplier);
+    if (!updateSupplier) return res.json({ message: "Supplier not found" });
+
+    res.status(200).json({ message: "Supplier updated successfully" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -43,21 +49,16 @@ const updateSupplier = async (req: Request, res: Response) => {
 
 const getAllSuppliers = async (req: Request, res: Response) => {
   try {
-    const suppliers = await prisma.supplier.findMany();
-    res.status(200).json(suppliers);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
-
-const getAllSuppliersWithProducts = async (req: Request, res: Response) => {
-  try {
+    const { products } = req.query;
     const suppliers = await prisma.supplier.findMany({
       include: {
-        Products: true,
+        products: products ? true : false,
       },
     });
-    res.status(200).json(suppliers);
+
+    res
+      .status(200)
+      .json({ message: "Suppliers got successfully", data: suppliers });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -65,36 +66,25 @@ const getAllSuppliersWithProducts = async (req: Request, res: Response) => {
 
 const getSupplierById = async (req: Request, res: Response) => {
   try {
+    const { products } = req.query;
     const { id } = req.params;
-    if (!id) return res.status(405).json("Invalid Supplier Request");
-
-    const supplier = await prisma.supplier.findFirst({
-      where: {
-        id,
-      },
-    });
-
-    res.status(200).json(supplier);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
-
-const getSupplierByIdWithProducts = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    if (!id) return res.status(405).json("Invalid Supplier Request");
+    if (!id) return res.status(405).json({ message: "Invalid Request Data" });
 
     const supplier = await prisma.supplier.findFirst({
       where: {
         id,
       },
       include: {
-        Products: true,
+        products: products ? true : false,
       },
     });
 
-    res.status(200).json(supplier);
+    if (!supplier)
+      return res.status(404).json({ message: "Supplier not found" });
+
+    res
+      .status(200)
+      .json({ message: "Supplier found successfully", data: supplier });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -103,7 +93,7 @@ const getSupplierByIdWithProducts = async (req: Request, res: Response) => {
 const deleteSupplier = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    if (!id) return res.status(405).json("Invalid Supplier Request");
+    if (!id) return res.status(405).json({ message: "Invalid Request Data" });
 
     const deleteSupplier = await prisma.supplier.delete({
       where: {
@@ -111,7 +101,10 @@ const deleteSupplier = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(deleteSupplier);
+    if (!deleteSupplier)
+      return res.status(404).json({ message: "Supplier not found" });
+
+    res.status(200).json({ message: "Supplier deleted successfully" });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -119,10 +112,8 @@ const deleteSupplier = async (req: Request, res: Response) => {
 
 export {
   createSupplier,
-  updateSupplier,
-  getAllSuppliers,
-  getAllSuppliersWithProducts,
-  getSupplierById,
-  getSupplierByIdWithProducts,
   deleteSupplier,
+  getAllSuppliers,
+  getSupplierById,
+  updateSupplier,
 };

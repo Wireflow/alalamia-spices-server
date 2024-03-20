@@ -27,13 +27,13 @@ enum PaymentMethod {
 model Member {
   id          String        @id @default(cuid())
   name        String
-  address     String
+  address     String        @unique
   city        String
   state       String
   zipCode     String
-  phoneNumber String
+  phoneNumber String        @unique
   owedBalance Float?
-  Transaction Transaction[]
+  transaction Transaction[]
 }
 
 model Transaction {
@@ -41,8 +41,10 @@ model Transaction {
   totalAmount   Float
   orderNumber   Int           @unique @default(autoincrement())
   paymentMethod PaymentMethod
-  Member        Member?       @relation(fields: [memberId], references: [id])
+  member        Member?       @relation(fields: [memberId], references: [id])
   memberId      String?
+  checkNumber   Int?
+  checkAmount   Int?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   transactionId String?
@@ -51,31 +53,21 @@ model Transaction {
   @@index([memberId])
 }
 
-model ProductCategory {
-  id        String    @id @default(cuid())
-  name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Products  Product[]
-}
-
 model Product {
-  id                String           @id @default(cuid())
-  name              String
-  description       String?
-  price             Float
-  boxQuantity       Int?
-  quantity          Int?
-  grams             Int?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  ProductCategory   ProductCategory? @relation(fields: [productCategoryId], references: [id])
-  productCategoryId String?
-  Supplier          Supplier?        @relation(fields: [supplierId], references: [id])
-  supplierId        String?
-  transactions      Transaction[]    @relation("TransactionToProduct")
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  price        Float
+  boxQuantity  Int?
+  quantity     Int?
+  grams        Int?
+  sku          String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  supplier     Supplier?     @relation(fields: [supplierId], references: [id])
+  supplierId   String?
+  transactions Transaction[] @relation("TransactionToProduct")
 
-  @@index([productCategoryId])
   @@index([supplierId])
 }
 
@@ -83,7 +75,7 @@ model Supplier {
   id          String    @id @default(cuid())
   name        String
   owedBalance Float?
-  Products    Product[]
+  products    Product[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

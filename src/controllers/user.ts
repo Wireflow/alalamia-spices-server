@@ -17,7 +17,8 @@ const getAllUsers = async (req: Request, res: Response) => {
 const createUser = async (req: Request, res: Response) => {
   try {
     const user = UserSchema.safeParse(req.body);
-    if (!user.success) return res.status(405).json("Invalid Request Data");
+    if (!user.success)
+      return res.status(405).json({ message: "Invalid Request Data" });
 
     const hashedPassword = authService.encryptPassword(user.data.password);
 
@@ -28,7 +29,9 @@ const createUser = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(newUser);
+    res
+      .status(200)
+      .json({ message: "User created successfully", data: newUser });
   } catch (error) {
     res.status(500).json(error);
   }

@@ -8,7 +8,8 @@ const authService = authServiceImpl();
 const signInUser = async (req: Request, res: Response) => {
   try {
     const user = UserSchema.safeParse(req.body);
-    if (!user.success) return res.json("Invalid Request Data").status(405);
+    if (!user.success)
+      return res.json({ message: "Invalid Request Data" }).status(405);
 
     const existingUser = await prisma.user.findFirst({
       where: {
@@ -16,14 +17,16 @@ const signInUser = async (req: Request, res: Response) => {
       },
     });
 
-    if (!existingUser) return res.json("User does not exist").status(401);
+    if (!existingUser)
+      return res.json({ message: "User does not exist" }).status(401);
 
     const isPasswordMatch = authService.compare(
       user.data.password,
       existingUser.password
     );
 
-    if (!isPasswordMatch) return res.json("Unauthorized Request").status(401);
+    if (!isPasswordMatch)
+      return res.json({ message: "Unauthorized Request" }).status(401);
 
     const token = authService.generateToken({ id: existingUser.id });
 
@@ -36,7 +39,7 @@ const signInUser = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    res.status(500).json("Internal Server Error");
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
