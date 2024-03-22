@@ -8,8 +8,8 @@ import {
 const router: Router = express.Router();
 
 router.get("/transactions", getAllTransactions);
-router.get("/transaction/:id", getTransactionById);
-router.post("/transaction", createTransaction);
-router.delete("/transaction/:id", deleteTransaction);
+router.get("/transactions/:id", getTransactionById);
+router.post("/transactions", createTransaction);
+router.delete("/transactions/:id", deleteTransaction);
 
 export default router;
