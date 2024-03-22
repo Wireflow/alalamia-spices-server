@@ -1,11 +1,11 @@
 ## Products
 
-- **PUT /api/product/:id**
+- **PUT /api/products/:id**
 
   - Updates an already existing product.
   - Any field that exists within the product's table can be updated with this endpoint.
   - Requires authentication token.
-  - Request Body:
+  - **Request Body**:
 
     ```json
     {
@@ -28,7 +28,7 @@
     }
     ```
 
-  - Response
+  - **Response**
 
     ```json
     {

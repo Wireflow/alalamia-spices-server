@@ -1,9 +1,9 @@
 ## Members
 
-- **POST /api/member**
+- **POST /api/members**
   - Creates a new member.
   - Requires authentication token.
-  - Request Body:
+  - **Request Body:**
     ```json
     {
       "name": "1234 Deli Grocery",
@@ -15,7 +15,7 @@
       "phoneNumber": "9188182182"
     }
     ```
-  - Response
+  - **Response**
     ```json
     {
       "message": "Member created successfully",

@@ -1,9 +1,9 @@
 ## Transactions
 
-- **POST /api/transaction**
+- **POST /api/transactions**
   - Creates a new transaction.
   - Requires authentication token.
-  - Request Body:
+  - **Request Body**:
     ```json
     {
       "totalAmount": 1200.5,
@@ -15,7 +15,7 @@
       ]
     }
     ```
-  - Response
+  - **Response**
     ```json
     {
       "message": "Transaction created successfully",

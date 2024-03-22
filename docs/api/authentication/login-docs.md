@@ -4,7 +4,7 @@
 
 - **POST /api/auth/login**
   - Logs in a user.
-  - Request Body:
+  - **Request Body**:
     ```json
     {
       "email": "johndoe@mail.com",

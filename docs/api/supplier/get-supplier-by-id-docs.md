@@ -1,12 +1,13 @@
 ## Suppliers
 
-- **GET /api/supplier/:id**
+- **GET /api/suppliers/:id**
 
   - Get an existing supplier.
   - Requires authentication token.
-  - Get suppliers with products using **/api/supplier/:id?products=true**
-  - Response
-
+  - Products filter example: `/api/suppliers?products=true`
+  - **Query Parameters**:
+    - `products`: true or false, whether to include the products of the supplier.
+  - **Response**
     ```json
     {
       "message": "Supplier found successfully",

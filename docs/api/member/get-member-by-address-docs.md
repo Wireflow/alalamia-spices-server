@@ -1,15 +1,15 @@
 ## Members
 
-- **POST /api/member/get-by-address**
+- **POST /api/members/get-by-address**
   - Returns a list of members that contains the address.
   - Requires authentication token.
-  - Request Body:
+  - **Request Body:**
     ```json
     {
       "address": "123 Street Ave"
     }
     ```
-  - Response
+  - **Response**
     ```json
     {
       "message": "Member found successfully",

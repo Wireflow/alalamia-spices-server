@@ -1,12 +1,13 @@
 ## Members
 
-- **GET /api/member/:id**
+- **GET /api/members/:id**
 
-  - Get an existing product.
+  - Get an existing member.
   - Requires authentication token.
-  - Get member with their transactions using **/api/member/:id?transactions=true**
-  - Response
-
+  - Transaction filter example: `/api/members/:id?transactions=true`
+  - **Query Parameters**:
+    - `transactions`: true or false, where you want the list of transactions or not.
+  - **Response**
     ```json
     {
       "message": "Member found successfully",

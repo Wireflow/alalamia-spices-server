@@ -2,27 +2,38 @@
 
 - **GET /api/products**
   - Returns a list of all products.
-  - Query server side pagination
+  - Supports server side pagination
   - Requires authentication token.
-  - Pagination ex. (**/api/products?page=1&pageSize=10**)
-  - **page** represents the current page, **pageSize** is the number of records per page.
-  - Response
+  - Pagination example: `/api/products?page=1&pageSize=10`
+  - Supplier filter example: `/api/products?supplier=true`
+  - **Query Parameters**:
+    - `page`: Represents the current page number.
+    - `pageSize`: Number of records per page.
+    - `supplier`: true or false, whether to include the supplier information of the product.
+  - **Response**
     ```json
     {
       "message": "Products got successfully",
       "data": [
         {
-          "id": "cltxr5l9l0000t9afai8uusi6",
-          "name": "Ajwa Dats",
-          "description": "Best Dates In Yemen",
-          "price": 10.99,
+          "id": "clu0nt49g00018md5jf3wtjtp",
+          "name": "Chicken Cube Spices ",
+          "description": null,
+          "price": 0,
           "boxQuantity": null,
-          "quantity": 10,
+          "quantity": null,
           "grams": null,
           "sku": null,
-          "createdAt": "2024-03-19T02:25:28.024Z",
-          "updatedAt": "2024-03-19T02:41:41.610Z",
-          "supplierId": null
+          "createdAt": "2024-03-21T03:15:05.813Z",
+          "updatedAt": "2024-03-22T01:04:12.074Z",
+          "supplierId": "cltz78w0i000110wkp1424sat",
+          "supplier": {
+            "id": "cltz78w0i000110wkp1424sat",
+            "name": "Bronx Trading LLC",
+            "owedBalance": 1900.5,
+            "createdAt": "2024-03-20T02:43:41.951Z",
+            "updatedAt": "2024-03-20T02:43:41.951Z"
+          }
         },
         {
           "id": "cltxr6czu0001t9afhg4x0ayh",

@@ -1,11 +1,13 @@
 ## Products
 
-- **GET /api/product/:id**
+- **GET /api/products/:id**
 
   - Get an existing product.
   - Requires authentication token.
-  - Response
-
+  - Supplier filter example: `/api/products/cltz6hcaa0001zhfccsruyns5?supplier=true`
+  - **Query Parameters**:
+    - `supplier`: true or false, whether to include the supplier information of the product.
+  - **Response**
     ```json
     {
       "message": "Product found successfully",

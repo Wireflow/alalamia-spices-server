@@ -153,7 +153,7 @@ const deleteMember = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (!id)
-      return res.status(405).json({ message: "Invalid Transaction Request" });
+      return res.status(405).json({ message: "Invalid Expense Request" });
 
     const deleteMember = await prisma.member.delete({
       where: {

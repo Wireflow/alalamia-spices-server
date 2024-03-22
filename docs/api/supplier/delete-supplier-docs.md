@@ -1,11 +1,10 @@
 ## Suppliers
 
-- **PUT /api/supplier/:id**
+- **PUT /api/suppliers/:id**
 
   - Permanently deletes a supplier from the database.
   - Requires authentication token.
-  - Response
-
+  - **Response**
     ```json
     {
       "message": "Supplier deleted successfully"

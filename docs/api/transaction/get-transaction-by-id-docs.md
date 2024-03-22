@@ -1,12 +1,13 @@
 ## Transactions
 
-- **GET /api/transaction/:id**
+- **GET /api/transactions/:id**
 
   - Get an existing transaction.
   - Requires authentication token.
-  - Get transaction with purchased products using **/api/transaction/:id?products=true**
-  - Response
-
+  - Products filter example: `/api/transactions/cltz8q0u20001cpnie27r704f?products=true`
+  - **Query Parameters**:
+    - `products`: true or false, whether to include the products purchased in the transactions.
+  - **Response**
     ```json
     {
       "message": "Transaction found successfully",

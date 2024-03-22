@@ -5,11 +5,13 @@
   - Returns a list of all transactions.
   - Query server side pagination
   - Requires authentication token.
-  - Pagination ex. (**/api/transactions?page=1&pageSize=10**)
-  - **page** represents the current page, **pageSize** is the number of records per page.
-  - Get transactions with purchased products using **/api/transactions?products=true**
-  - Response
-
+  - Pagination example: `/api/products?page=1&pageSize=10`
+  - Products filter example: `/api/transactions?products=true`
+  - **Query Parameters**:
+    - `page`: Represents the current page number.
+    - `pageSize`: Number of records per page.
+    - `products`: true or false, whether to include the products purchased in the transactions.
+  - **Response**
     ```json
     {
       "message": "Transactions got successfully",

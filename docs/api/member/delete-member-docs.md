@@ -1,10 +1,10 @@
 ## Members
 
-- **PUT /api/member/:id**
+- **PUT /api/members/:id**
 
   - Permanently deletes a member from the database.
   - Requires authentication token.
-  - Response
+  - **Response**
 
     ```json
     {

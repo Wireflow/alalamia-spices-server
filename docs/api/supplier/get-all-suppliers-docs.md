@@ -2,12 +2,15 @@
 
 - **GET /api/suppliers**
   - Returns a list of all products.
-  - Query server side pagination
+  - Supports server side pagination
   - Requires authentication token.
-  - Pagination ex. (**/api/suppliers?page=1&pageSize=10**)
-  - **page** represents the current page, **pageSize** is the number of records per page.
-  - Get suppliers with products using **/api/suppliers?products=true**
-  - Response
+  - Pagination example: `/api/suppliers?page=1&pageSize=10`
+  - Products filter example: `/api/suppliers?products=true`
+  - **Query Parameters**:
+    - `page`: Represents the current page number.
+    - `pageSize`: Number of records per page.
+    - `products`: true or false, whether to include the products of the supplier.
+  - **Response**
     ```json
     {
       "message": "Suppliers got successfully",

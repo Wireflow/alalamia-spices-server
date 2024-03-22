@@ -1,6 +1,6 @@
 ## Members
 
-- **POST /api/user**
+- **POST /api/users**
   - Creates a new member.
   - Requires authentication token.
   - Request Body:

@@ -1,16 +1,16 @@
 ## Suppliers
 
-- **POST /api/supplier**
+- **POST /api/suppliers**
   - Creates a new supplier.
   - Requires authentication token.
-  - Request Body:
+  - **Request Body**:
     ```json
     {
       "name": "Hershey Candy",
       "owedBalance": 1900.5
     }
     ```
-  - Response
+  - **Response**
     ```json
     {
       "message": "Supplier created successfully",

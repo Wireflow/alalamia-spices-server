@@ -1,11 +1,11 @@
 ## Members
 
-- **PUT /api/member/:id**
+- **PUT /api/members/:id**
 
   - Updates an already existing member.
   - Any field that exists within the member's table can be updated with this endpoint.
   - Requires authentication token.
-  - Request Body:
+  - **Request Body**:
 
     ```json
     {

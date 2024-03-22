@@ -1,9 +1,9 @@
 ## Members
 
-- **POST /api/member/get-by-phone**
+- **POST /api/members/get-by-phone**
   - Returns a list of members that contains the phone number.
   - Requires authentication token.
-  - Request Body:
+  - **Request Body**:
     ```json
     {
       "phoneNumber": "9177131203"

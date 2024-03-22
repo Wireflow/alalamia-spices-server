@@ -1,11 +1,10 @@
 ## Transactions
 
-- **PUT /api/transaction/:id**
+- **PUT /api/transactions/:id**
 
   - Permanently deletes a transaction from the database.
   - Requires authentication token.
-  - Response
-
+  - **Response**
     ```json
     {
       "message": "Transaction deleted successfully"

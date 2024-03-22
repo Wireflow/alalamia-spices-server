@@ -2,11 +2,13 @@
 
 - **GET /api/members**
   - Returns a list of all members.
-  - Query server side pagination
+  - Supports server-side pagination.
   - Requires authentication token.
-  - Pagination ex. (**/api/members?page=1&pageSize=10**)
-  - **page** represents the current page, **pageSize** is the number of records per page.
-  - Response
+  - Pagination example: `/api/members?page=1&pageSize=10`
+  - **Query Parameters**:
+    - `page`: Represents the current page number.
+    - `pageSize`: Number of records per page.
+  - **Response**
     ```json
     {
       "message": "Members got successfully",

@@ -52,6 +52,7 @@ const updateProduct = async (req: Request, res: Response) => {
 const getAllProducts = async (req: Request, res: Response) => {
   try {
     const { page = 1, pageSize = 10 } = req.query;
+    const { supplier } = req.query;
     const { skip, take } = calculatePagination({
       page: Number(page),
       pageSize: Number(pageSize),
@@ -60,6 +61,9 @@ const getAllProducts = async (req: Request, res: Response) => {
     const products = await prisma.product.findMany({
       take,
       skip,
+      include: {
+        supplier: supplier ? true : false,
+      },
     });
 
     res
@@ -73,12 +77,16 @@ const getAllProducts = async (req: Request, res: Response) => {
 const getProductById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const { supplier } = req.query;
     if (!id)
       return res.status(405).json({ message: "Invalid Product Request" });
 
     const product = await prisma.product.findFirst({
       where: {
         id,
+      },
+      include: {
+        supplier: supplier ? true : false,
       },
     });
 

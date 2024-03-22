@@ -1,11 +1,11 @@
 ## Suppliers
 
-- **PUT /api/supplier/:id**
+- **PUT /api/suppliers/:id**
 
   - Updates an already existing supplier.
   - Any field that exists within the supplier's table can be updated with this endpoint.
   - Requires authentication token.
-  - Request Body:
+  - **Request Body**:
 
     ```json
     {

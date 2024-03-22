@@ -1,9 +1,9 @@
 ## Products
 
-- **POST /api/product**
+- **POST /api/products**
   - Creates a new product.
   - Requires authentication token.
-  - Request Body:
+  - **Request Body**:
     ```json
     {
       "name": "Hershey Candy",
@@ -16,7 +16,7 @@
       "supplierId": "cltz5uanj000012tyfi3qbi9c" // Optional
     }
     ```
-  - Response
+  - **Response**
     ```json
     {
       "message": "Product created successfully",
