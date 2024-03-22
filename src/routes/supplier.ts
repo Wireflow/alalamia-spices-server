@@ -8,10 +8,10 @@ import {
 } from "../controllers/supplier";
 const router: Router = express.Router();
 
-router.post("/supplier", createSupplier);
-router.put("/supplier/:id", updateSupplier);
-router.delete("/supplier/:id", deleteSupplier);
+router.post("/suppliers", createSupplier);
+router.put("/suppliers/:id", updateSupplier);
+router.delete("/suppliers/:id", deleteSupplier);
 router.get("/suppliers", getAllSuppliers);
-router.get("/supplier/:id", getSupplierById);
+router.get("/suppliers/:id", getSupplierById);
 
 export default router;
