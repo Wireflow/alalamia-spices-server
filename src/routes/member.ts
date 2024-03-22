@@ -10,12 +10,12 @@ import {
 } from "../controllers/member";
 const router: Router = express.Router();
 
-router.post("/member", createMember);
-router.post("/member/get-by-address", getMemberByAddress);
-router.post("/member/get-by-phone", getMemberByPhone);
+router.post("/members", createMember);
+router.post("/members/get-by-address", getMemberByAddress);
+router.post("/members/get-by-phone", getMemberByPhone);
 router.get("/members", getAllMembers);
-router.get("/member/:id", getMemberById);
-router.put("/member/:id", updateMember);
-router.delete("/member/:id", deleteMember);
+router.get("/members/:id", getMemberById);
+router.put("/members/:id", updateMember);
+router.delete("/members/:id", deleteMember);
 
 export default router;
