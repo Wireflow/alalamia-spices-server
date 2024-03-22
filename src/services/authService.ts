@@ -34,8 +34,11 @@ const authService = () => {
         time: Date(),
         ...payload,
       };
+
+      const expiresInOneMonth = 30 * 24 * 60 * 60;
+
       const token = jwt.sign(data, config.jwtSecret, {
-        expiresIn: 56000,
+        expiresIn: expiresInOneMonth,
       });
 
       return token;
