@@ -55,6 +55,7 @@ exports.updateProduct = updateProduct;
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { page = 1, pageSize = 10 } = req.query;
+        const { supplier } = req.query;
         const { skip, take } = (0, calculatePagination_1.default)({
             page: Number(page),
             pageSize: Number(pageSize),
@@ -62,6 +63,9 @@ const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const products = yield connection_1.default.product.findMany({
             take,
             skip,
+            include: {
+                supplier: supplier ? true : false,
+            },
         });
         res
             .status(200)
@@ -75,11 +79,15 @@ exports.getAllProducts = getAllProducts;
 const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
+        const { supplier } = req.query;
         if (!id)
             return res.status(405).json({ message: "Invalid Product Request" });
         const product = yield connection_1.default.product.findFirst({
             where: {
                 id,
+            },
+            include: {
+                supplier: supplier ? true : false,
             },
         });
         if (!product)

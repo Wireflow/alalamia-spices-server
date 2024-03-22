@@ -145,7 +145,7 @@ const deleteMember = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const { id } = req.params;
         if (!id)
-            return res.status(405).json({ message: "Invalid Transaction Request" });
+            return res.status(405).json({ message: "Invalid Expense Request" });
         const deleteMember = yield connection_1.default.member.delete({
             where: {
                 id,
