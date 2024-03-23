@@ -35,8 +35,9 @@ const authService = () => {
     const generateToken = (payload) => {
         try {
             const data = Object.assign({ time: Date() }, payload);
+            const expiresInOneMonth = 30 * 24 * 60 * 60;
             const token = jsonwebtoken_1.default.sign(data, config_1.default.jwtSecret, {
-                expiresIn: 56000,
+                expiresIn: expiresInOneMonth,
             });
             return token;
         }
