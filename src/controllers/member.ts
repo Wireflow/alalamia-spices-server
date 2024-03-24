@@ -78,15 +78,15 @@ const updateMember = async (req: Request, res: Response) => {
 
 const getMemberByPhone = async (req: Request, res: Response) => {
   try {
-    const member = MemberPhoneNumber.safeParse(req.body);
+    const { phoneNumber } = req.query;
 
-    if (!member.success)
-      return res.status(405).json({ message: "Invalid Request Data" });
+    if (!phoneNumber)
+      return res.status(405).json({ message: "Invalid Search Data" });
 
     const foundUser = await prisma.member.findMany({
       where: {
         phoneNumber: {
-          contains: member.data.phoneNumber,
+          contains: phoneNumber as string,
         },
       },
     });
@@ -104,15 +104,15 @@ const getMemberByPhone = async (req: Request, res: Response) => {
 
 const getMemberByAddress = async (req: Request, res: Response) => {
   try {
-    const member = MemberAddress.safeParse(req.body);
+    const { address } = req.query;
 
-    if (!member.success)
-      return res.status(405).json({ message: "Invalid Request Data" });
+    if (!address)
+      return res.status(405).json({ message: "Invalid Search Data" });
 
     const foundUser = await prisma.member.findMany({
       where: {
         address: {
-          contains: member.data.address,
+          contains: address as string,
         },
       },
     });
