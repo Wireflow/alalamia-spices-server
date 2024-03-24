@@ -77,13 +77,13 @@ const updateMember = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.updateMember = updateMember;
 const getMemberByPhone = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const member = member_1.MemberPhoneNumber.safeParse(req.body);
-        if (!member.success)
-            return res.status(405).json({ message: "Invalid Request Data" });
+        const { phoneNumber } = req.query;
+        if (!phoneNumber)
+            return res.status(405).json({ message: "Invalid Search Data" });
         const foundUser = yield connection_1.default.member.findMany({
             where: {
                 phoneNumber: {
-                    contains: member.data.phoneNumber,
+                    contains: phoneNumber,
                 },
             },
         });
@@ -100,13 +100,13 @@ const getMemberByPhone = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getMemberByPhone = getMemberByPhone;
 const getMemberByAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const member = member_1.MemberAddress.safeParse(req.body);
-        if (!member.success)
-            return res.status(405).json({ message: "Invalid Request Data" });
+        const { address } = req.query;
+        if (!address)
+            return res.status(405).json({ message: "Invalid Search Data" });
         const foundUser = yield connection_1.default.member.findMany({
             where: {
                 address: {
-                    contains: member.data.address,
+                    contains: address,
                 },
             },
         });
