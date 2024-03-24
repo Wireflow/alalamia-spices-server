@@ -7,7 +7,7 @@ const getAllTransactions = async (req: Request, res: Response) => {
     const { products } = req.query;
     const transactions = await prisma.transaction.findMany({
       include: {
-        products: products ? true : false,
+        purchasedProducts: products ? true : false,
       },
     });
 
@@ -29,14 +29,34 @@ const createTransaction = async (req: Request, res: Response) => {
     const newTransaction = await prisma.transaction.create({
       data: {
         ...transaction.data,
-        products: {
-          connect: [...transaction.data.products],
+        purchasedProducts: {
+          createMany: {
+            data: transaction.data.purchasedProducts,
+          },
         },
       },
     });
 
+    if (!newTransaction)
+      return res.status(500).json({ message: "Failed to create transaction" });
+
+    const purchasedProducts = transaction.data.purchasedProducts;
+
+    for (const purchasedProduct of purchasedProducts) {
+      await prisma.product.updateMany({
+        where: {
+          id: purchasedProduct.productId,
+        },
+        data: {
+          quantity: {
+            decrement: purchasedProduct.purchaseQuantity,
+          },
+        },
+      });
+    }
+
     res.status(200).json({
-      message: "Transaction created successfully",
+      message: "Transaction completed successfully",
       data: newTransaction,
     });
   } catch (error) {
@@ -77,7 +97,7 @@ const getTransactionById = async (req: Request, res: Response) => {
         id,
       },
       include: {
-        products: products ? true : false,
+        purchasedProducts: products ? true : false,
       },
     });
 

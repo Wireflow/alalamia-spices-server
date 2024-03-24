@@ -20,7 +20,7 @@ const getAllTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const { products } = req.query;
         const transactions = yield connection_1.default.transaction.findMany({
             include: {
-                products: products ? true : false,
+                purchasedProducts: products ? true : false,
             },
         });
         res
@@ -38,12 +38,29 @@ const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (!transaction.success)
             return res.status(405).json({ message: "Invalid Transaction Request" });
         const newTransaction = yield connection_1.default.transaction.create({
-            data: Object.assign(Object.assign({}, transaction.data), { products: {
-                    connect: [...transaction.data.products],
+            data: Object.assign(Object.assign({}, transaction.data), { purchasedProducts: {
+                    createMany: {
+                        data: transaction.data.purchasedProducts,
+                    },
                 } }),
         });
+        if (!newTransaction)
+            return res.status(500).json({ message: "Failed to create transaction" });
+        const purchasedProducts = transaction.data.purchasedProducts;
+        for (const purchasedProduct of purchasedProducts) {
+            yield connection_1.default.product.updateMany({
+                where: {
+                    id: purchasedProduct.productId,
+                },
+                data: {
+                    quantity: {
+                        decrement: purchasedProduct.purchaseQuantity,
+                    },
+                },
+            });
+        }
         res.status(200).json({
-            message: "Transaction created successfully",
+            message: "Transaction completed successfully",
             data: newTransaction,
         });
     }
@@ -82,7 +99,7 @@ const getTransactionById = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 id,
             },
             include: {
-                products: products ? true : false,
+                purchasedProducts: products ? true : false,
             },
         });
         if (!transaction)

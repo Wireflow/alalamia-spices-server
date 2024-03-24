@@ -44,7 +44,7 @@ const getMemberById = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 id,
             },
             include: {
-                transaction: transactions ? true : false,
+                transactions: transactions ? true : false,
             },
         });
         if (!member)

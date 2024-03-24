@@ -40,7 +40,7 @@ const getMemberById = async (req: Request, res: Response) => {
         id,
       },
       include: {
-        transaction: transactions ? true : false,
+        transactions: transactions ? true : false,
       },
     });
 
