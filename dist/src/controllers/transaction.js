@@ -53,7 +53,7 @@ const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
                     id: purchasedProduct.productId,
                 },
                 data: {
-                    quantity: {
+                    boxQuantity: {
                         decrement: purchasedProduct.purchaseQuantity,
                     },
                 },
