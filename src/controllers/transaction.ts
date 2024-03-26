@@ -48,7 +48,7 @@ const createTransaction = async (req: Request, res: Response) => {
           id: purchasedProduct.productId,
         },
         data: {
-          quantity: {
+          boxQuantity: {
             decrement: purchasedProduct.purchaseQuantity,
           },
         },
