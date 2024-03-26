@@ -26,6 +26,47 @@ const createTransaction = async (req: Request, res: Response) => {
     if (!transaction.success)
       return res.status(405).json({ message: "Invalid Transaction Request" });
 
+    const purchasedProducts = transaction.data.purchasedProducts;
+    const updatePromises = purchasedProducts.map(async (purchasedProduct) => {
+      const product = await prisma.product.findUnique({
+        where: {
+          id: purchasedProduct.productId,
+        },
+        select: {
+          id: true,
+          boxQuantity: true,
+          name: true,
+        },
+      });
+
+      const productBoxQuantity =
+        (product?.boxQuantity && product.boxQuantity) || 0;
+
+      if (!product || productBoxQuantity < purchasedProduct.purchaseQuantity) {
+        throw new Error(`Not enough quantity: ${product?.name}`);
+      }
+
+      await prisma.product.updateMany({
+        where: {
+          id: purchasedProduct.productId,
+        },
+        data: {
+          boxQuantity: {
+            decrement: purchasedProduct.purchaseQuantity,
+          },
+        },
+      });
+    });
+
+    try {
+      await Promise.all(updatePromises);
+    } catch (error) {
+      return res.json({
+        message:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      });
+    }
+
     const newTransaction = await prisma.transaction.create({
       data: {
         ...transaction.data,
@@ -39,21 +80,6 @@ const createTransaction = async (req: Request, res: Response) => {
 
     if (!newTransaction)
       return res.status(500).json({ message: "Failed to create transaction" });
-
-    const purchasedProducts = transaction.data.purchasedProducts;
-
-    for (const purchasedProduct of purchasedProducts) {
-      await prisma.product.updateMany({
-        where: {
-          id: purchasedProduct.productId,
-        },
-        data: {
-          boxQuantity: {
-            decrement: purchasedProduct.purchaseQuantity,
-          },
-        },
-      });
-    }
 
     res.status(200).json({
       message: "Transaction completed successfully",

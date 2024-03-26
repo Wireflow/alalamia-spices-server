@@ -37,17 +37,22 @@ const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const transaction = transaction_1.TransactionSchema.safeParse(req.body);
         if (!transaction.success)
             return res.status(405).json({ message: "Invalid Transaction Request" });
-        const newTransaction = yield connection_1.default.transaction.create({
-            data: Object.assign(Object.assign({}, transaction.data), { purchasedProducts: {
-                    createMany: {
-                        data: transaction.data.purchasedProducts,
-                    },
-                } }),
-        });
-        if (!newTransaction)
-            return res.status(500).json({ message: "Failed to create transaction" });
         const purchasedProducts = transaction.data.purchasedProducts;
-        for (const purchasedProduct of purchasedProducts) {
+        const updatePromises = purchasedProducts.map((purchasedProduct) => __awaiter(void 0, void 0, void 0, function* () {
+            const product = yield connection_1.default.product.findUnique({
+                where: {
+                    id: purchasedProduct.productId,
+                },
+                select: {
+                    id: true,
+                    boxQuantity: true,
+                    name: true,
+                },
+            });
+            const productBoxQuantity = ((product === null || product === void 0 ? void 0 : product.boxQuantity) && product.boxQuantity) || 0;
+            if (!product || productBoxQuantity < purchasedProduct.purchaseQuantity) {
+                throw new Error(`Not enough quantity: ${product === null || product === void 0 ? void 0 : product.name}`);
+            }
             yield connection_1.default.product.updateMany({
                 where: {
                     id: purchasedProduct.productId,
@@ -58,7 +63,24 @@ const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
                     },
                 },
             });
+        }));
+        try {
+            yield Promise.all(updatePromises);
         }
+        catch (error) {
+            return res.json({
+                message: error instanceof Error ? error.message : "Unknown error occurred",
+            });
+        }
+        const newTransaction = yield connection_1.default.transaction.create({
+            data: Object.assign(Object.assign({}, transaction.data), { purchasedProducts: {
+                    createMany: {
+                        data: transaction.data.purchasedProducts,
+                    },
+                } }),
+        });
+        if (!newTransaction)
+            return res.status(500).json({ message: "Failed to create transaction" });
         res.status(200).json({
             message: "Transaction completed successfully",
             data: newTransaction,
