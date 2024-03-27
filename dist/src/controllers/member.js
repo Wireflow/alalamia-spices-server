@@ -12,10 +12,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMemberById = exports.deleteMember = exports.getAllMembers = exports.getMemberByPhone = exports.getMemberByAddress = exports.updateMember = exports.createMember = void 0;
+exports.getMemberCount = exports.getMembersTotalOwedBalance = exports.getMemberById = exports.deleteMember = exports.getAllMembers = exports.getMemberByPhone = exports.getMemberByAddress = exports.updateMember = exports.createMember = void 0;
 const connection_1 = __importDefault(require("../prisma/connection"));
 const member_1 = require("../types/member");
 const calculatePagination_1 = __importDefault(require("../utils/calculatePagination"));
+const getMemberCount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const count = yield connection_1.default.member.count();
+        res
+            .status(200)
+            .json({ message: "Member count retrieved successfully", data: count });
+    }
+    catch (error) {
+        res.status(500).json(error);
+    }
+});
+exports.getMemberCount = getMemberCount;
+const getMembersTotalOwedBalance = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const count = yield connection_1.default.member.aggregate({
+            _sum: {
+                owedBalance: true,
+            },
+        });
+        res
+            .status(200)
+            .json({ message: "Member total owed balance successfully", data: count });
+    }
+    catch (error) {
+        res.status(500).json(error);
+    }
+});
+exports.getMembersTotalOwedBalance = getMembersTotalOwedBalance;
 const createMember = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const member = member_1.MemberSchema.safeParse(req.body);

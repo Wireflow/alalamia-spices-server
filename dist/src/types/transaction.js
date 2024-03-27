@@ -7,7 +7,7 @@ exports.TransactionSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 exports.TransactionSchema = zod_1.default.object({
     totalAmount: zod_1.default.number(),
-    paymentMethod: zod_1.default.enum(["CASH", "CHECK", "CARD"]),
+    paymentMethod: zod_1.default.enum(["CASH", "CHECK", "UNPAID"]),
     checkNumber: zod_1.default.number().optional(),
     checkAmount: zod_1.default.number().optional(),
     totalQuantityPurchased: zod_1.default.number(),

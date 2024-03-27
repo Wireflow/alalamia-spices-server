@@ -12,13 +12,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTransactionById = exports.getAllTransactions = exports.deleteTransaction = exports.createTransaction = void 0;
+exports.getTransactionCount = exports.getTransactionById = exports.getAllTransactions = exports.deleteTransaction = exports.createTransaction = void 0;
 const connection_1 = __importDefault(require("../prisma/connection"));
 const transaction_1 = require("../types/transaction");
+const calculatePagination_1 = __importDefault(require("../utils/calculatePagination"));
 const getAllTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { products } = req.query;
+        const { products, page = 1, pageSize = 10, from, to } = req.query;
+        const { skip, take } = (0, calculatePagination_1.default)({
+            page: Number(page),
+            pageSize: Number(pageSize),
+        });
+        let where = {};
+        if (from && to) {
+            where.createdAt = {
+                gte: new Date(from.toString() + "T00:00:00Z"),
+                lt: new Date(to.toString() + "T23:59:59Z"),
+            };
+        }
         const transactions = yield connection_1.default.transaction.findMany({
+            where,
+            take,
+            skip,
             include: {
                 purchasedProducts: products ? true : false,
             },
@@ -32,6 +47,29 @@ const getAllTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getAllTransactions = getAllTransactions;
+const getTransactionCount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { from, to } = req.query;
+        let where = {};
+        if (from && to) {
+            where.createdAt = {
+                gte: new Date(from.toString() + "T00:00:00Z"),
+                lt: new Date(to.toString() + "T23:59:59Z"),
+            };
+        }
+        const count = yield connection_1.default.transaction.count({
+            where,
+        });
+        res.status(200).json({
+            message: "Transaction count retrieved successfully",
+            data: count,
+        });
+    }
+    catch (error) {
+        res.status(500).json(error);
+    }
+});
+exports.getTransactionCount = getTransactionCount;
 const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const transaction = transaction_1.TransactionSchema.safeParse(req.body);
@@ -79,6 +117,23 @@ const createTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
                     },
                 } }),
         });
+        if (transaction.data.paymentMethod === "UNPAID") {
+            const memberWithBalance = yield connection_1.default.member.findFirst({
+                where: {
+                    id: transaction.data.memberId,
+                },
+            });
+            yield connection_1.default.member.update({
+                where: {
+                    id: transaction.data.memberId,
+                },
+                data: {
+                    owedBalance: !(memberWithBalance === null || memberWithBalance === void 0 ? void 0 : memberWithBalance.owedBalance)
+                        ? transaction.data.totalAmount
+                        : memberWithBalance.owedBalance + transaction.data.totalAmount,
+                },
+            });
+        }
         if (!newTransaction)
             return res.status(500).json({ message: "Failed to create transaction" });
         res.status(200).json({
