@@ -7,6 +7,32 @@ import {
 } from "../types/member";
 import calculatePagination from "../utils/calculatePagination";
 
+const getMemberCount = async (req: Request, res: Response) => {
+  try {
+    const count = await prisma.member.count();
+    res
+      .status(200)
+      .json({ message: "Member count retrieved successfully", data: count });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const getMembersTotalOwedBalance = async (req: Request, res: Response) => {
+  try {
+    const count = await prisma.member.aggregate({
+      _sum: {
+        owedBalance: true,
+      },
+    });
+    res
+      .status(200)
+      .json({ message: "Member total owed balance successfully", data: count });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const createMember = async (req: Request, res: Response) => {
   try {
     const member = MemberSchema.safeParse(req.body);
@@ -178,4 +204,6 @@ export {
   getAllMembers,
   deleteMember,
   getMemberById,
+  getMembersTotalOwedBalance,
+  getMemberCount,
 };
