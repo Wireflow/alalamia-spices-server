@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/connection";
 import { TransactionSchema } from "../types/transaction";
+import { date } from "zod";
 
 const getAllTransactions = async (req: Request, res: Response) => {
   try {
@@ -66,7 +67,7 @@ const createTransaction = async (req: Request, res: Response) => {
           error instanceof Error ? error.message : "Unknown error occurred",
       });
     }
-
+    
     const newTransaction = await prisma.transaction.create({
       data: {
         ...transaction.data,
@@ -77,6 +78,27 @@ const createTransaction = async (req: Request, res: Response) => {
         },
       },
     });
+
+    //UNPAID function
+
+    if (transaction.data.paymentMethod === 'UNPAID') {
+    
+      const memberWithBalance = await prisma.member.findFirst({
+        where: {
+          id: transaction.data.memberId
+        }
+      })
+
+      await prisma.member.update({
+        where: {
+          id: transaction.data.memberId
+        },
+        data: {
+          owedBalance: !memberWithBalance?.owedBalance ? transaction.data.totalAmount : memberWithBalance.owedBalance + transaction.data.totalAmount 
+        }
+      });
+    }
+    
 
     if (!newTransaction)
       return res.status(500).json({ message: "Failed to create transaction" });

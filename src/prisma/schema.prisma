@@ -21,7 +21,7 @@ model User {
 enum PaymentMethod {
   CASH
   CHECK
-  CARD
+  UNPAID
 }
 
 model Member {
