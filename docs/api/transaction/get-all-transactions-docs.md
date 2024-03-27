@@ -7,10 +7,13 @@
   - Requires authentication token.
   - Pagination example: `/api/products?page=1&pageSize=10`
   - Products filter example: `/api/transactions?products=true`
+  - Date range example: `/api/transactions?from=2024-03-21&to=2024-03-22`
   - **Query Parameters**:
     - `page`: Represents the current page number.
     - `pageSize`: Number of records per page.
     - `products`: true or false, whether to include the products purchased in the transactions.
+    - `from`: Start date of the date range.
+    - `to`: End date of the date range.
   - **Response**
     ```json
     {

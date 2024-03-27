@@ -1,12 +1,31 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/connection";
 import { TransactionSchema } from "../types/transaction";
-import { date } from "zod";
+import { Prisma } from "@prisma/client";
+import calculatePagination from "../utils/calculatePagination";
 
 const getAllTransactions = async (req: Request, res: Response) => {
   try {
-    const { products } = req.query;
+    const { products, page = 1, pageSize = 10, from, to } = req.query;
+
+    const { skip, take } = calculatePagination({
+      page: Number(page),
+      pageSize: Number(pageSize),
+    });
+
+    let where: Prisma.TransactionWhereInput = {};
+
+    if (from && to) {
+      where.createdAt = {
+        gte: new Date(from.toString() + "T00:00:00Z"),
+        lt: new Date(to.toString() + "T23:59:59Z"),
+      };
+    }
+
     const transactions = await prisma.transaction.findMany({
+      where,
+      take,
+      skip,
       include: {
         purchasedProducts: products ? true : false,
       },
@@ -20,6 +39,32 @@ const getAllTransactions = async (req: Request, res: Response) => {
   }
 };
 
+const getTransactionCount = async (req: Request, res: Response) => {
+  try {
+    const { from, to } = req.query;
+
+    let where: Prisma.TransactionWhereInput = {};
+
+    if (from && to) {
+      where.createdAt = {
+        gte: new Date(from.toString() + "T00:00:00Z"),
+        lt: new Date(to.toString() + "T23:59:59Z"),
+      };
+    }
+
+    const count = await prisma.transaction.count({
+      where,
+    });
+
+    res.status(200).json({
+      message: "Transaction count retrieved successfully",
+      data: count,
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const createTransaction = async (req: Request, res: Response) => {
   try {
     const transaction = TransactionSchema.safeParse(req.body);
@@ -28,6 +73,7 @@ const createTransaction = async (req: Request, res: Response) => {
       return res.status(405).json({ message: "Invalid Transaction Request" });
 
     const purchasedProducts = transaction.data.purchasedProducts;
+
     const updatePromises = purchasedProducts.map(async (purchasedProduct) => {
       const product = await prisma.product.findUnique({
         where: {
@@ -67,7 +113,7 @@ const createTransaction = async (req: Request, res: Response) => {
           error instanceof Error ? error.message : "Unknown error occurred",
       });
     }
-    
+
     const newTransaction = await prisma.transaction.create({
       data: {
         ...transaction.data,
@@ -79,26 +125,24 @@ const createTransaction = async (req: Request, res: Response) => {
       },
     });
 
-    //UNPAID function
-
-    if (transaction.data.paymentMethod === 'UNPAID') {
-    
+    if (transaction.data.paymentMethod === "UNPAID") {
       const memberWithBalance = await prisma.member.findFirst({
         where: {
-          id: transaction.data.memberId
-        }
-      })
+          id: transaction.data.memberId,
+        },
+      });
 
       await prisma.member.update({
         where: {
-          id: transaction.data.memberId
+          id: transaction.data.memberId,
         },
         data: {
-          owedBalance: !memberWithBalance?.owedBalance ? transaction.data.totalAmount : memberWithBalance.owedBalance + transaction.data.totalAmount 
-        }
+          owedBalance: !memberWithBalance?.owedBalance
+            ? transaction.data.totalAmount
+            : memberWithBalance.owedBalance + transaction.data.totalAmount,
+        },
       });
     }
-    
 
     if (!newTransaction)
       return res.status(500).json({ message: "Failed to create transaction" });
@@ -165,4 +209,5 @@ export {
   deleteTransaction,
   getAllTransactions,
   getTransactionById,
+  getTransactionCount,
 };
