@@ -31,6 +31,8 @@ const getAllTransactions = async (req: Request, res: Response) => {
       },
     });
 
+    console.log(transactions);
+
     res
       .status(200)
       .json({ message: "Transactions got successfully", data: transactions });

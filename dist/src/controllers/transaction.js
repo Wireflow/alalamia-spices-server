@@ -38,6 +38,7 @@ const getAllTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 purchasedProducts: products ? true : false,
             },
         });
+        console.log(transactions);
         res
             .status(200)
             .json({ message: "Transactions got successfully", data: transactions });
