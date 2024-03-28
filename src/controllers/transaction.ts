@@ -38,6 +38,8 @@ const getAllTransactions = async (req: Request, res: Response) => {
       .json({ message: "Transactions got successfully", data: transactions });
   } catch (error) {
     res.status(500).json(error);
+
+    console.log(error);
   }
 };
 
