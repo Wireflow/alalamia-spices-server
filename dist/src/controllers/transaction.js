@@ -27,7 +27,7 @@ const getAllTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (from && to) {
             where.createdAt = {
                 gte: new Date(from.toString() + "T00:00:00Z"),
-                lt: new Date(to.toString() + "T23:59:59Z"),
+                lte: new Date(to.toString() + "T23:59:59Z"),
             };
         }
         const transactions = yield connection_1.default.transaction.findMany({
