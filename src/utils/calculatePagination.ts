@@ -8,6 +8,7 @@ const calculatePagination = (params: PaginationParams) => {
 
   const skip = (page - 1) * pageSize;
   const take = pageSize;
+
   return { skip, take };
 };
 

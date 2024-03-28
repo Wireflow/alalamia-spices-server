@@ -7,6 +7,7 @@
   - Products filter example: `/api/transactions/cltz8q0u20001cpnie27r704f?products=true`
   - **Query Parameters**:
     - `products`: true or false, whether to include the products purchased in the transactions.
+    - `member`: true or false, whether to include the member of the transaction.
   - **Response**
     ```json
     {

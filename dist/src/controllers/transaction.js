@@ -170,7 +170,7 @@ exports.deleteTransaction = deleteTransaction;
 const getTransactionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const { products } = req.query;
+        const { products, member } = req.query;
         if (!id)
             return res.status(405).json({ message: "Invalid Transaction Request" });
         const transaction = yield connection_1.default.transaction.findFirst({
@@ -179,6 +179,7 @@ const getTransactionById = (req, res) => __awaiter(void 0, void 0, void 0, funct
             },
             include: {
                 purchasedProducts: products ? true : false,
+                member: member ? true : false,
             },
         });
         if (!transaction)

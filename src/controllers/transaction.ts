@@ -184,7 +184,7 @@ const deleteTransaction = async (req: Request, res: Response) => {
 const getTransactionById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { products } = req.query;
+    const { products, member } = req.query;
     if (!id)
       return res.status(405).json({ message: "Invalid Transaction Request" });
 
@@ -194,6 +194,7 @@ const getTransactionById = async (req: Request, res: Response) => {
       },
       include: {
         purchasedProducts: products ? true : false,
+        member: member ? true : false,
       },
     });
 
