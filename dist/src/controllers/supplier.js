@@ -53,10 +53,14 @@ const updateSupplier = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.updateSupplier = updateSupplier;
 const getAllSuppliers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { products } = req.query;
+        const { products, sort } = req.query;
+        const sortBy = sort ? sort : "desc";
         const suppliers = yield connection_1.default.supplier.findMany({
             include: {
                 products: products ? true : false,
+            },
+            orderBy: {
+                createdAt: sortBy,
             },
         });
         res

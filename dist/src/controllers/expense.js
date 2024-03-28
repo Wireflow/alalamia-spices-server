@@ -92,7 +92,7 @@ const deleteExpense = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.deleteExpense = deleteExpense;
 const getAllExpenses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { page = 1, pageSize = 10, from, to } = req.query;
+        const { page = 1, pageSize = 10, from, to, sort } = req.query;
         const { skip, take } = (0, calculatePagination_1.default)({
             page: Number(page),
             pageSize: Number(pageSize),
@@ -104,10 +104,14 @@ const getAllExpenses = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 lt: new Date(to.toString() + "T23:59:59Z"),
             };
         }
+        const sortBy = sort ? sort : "desc";
         const expenses = yield connection_1.default.expense.findMany({
             where,
             take,
             skip,
+            orderBy: {
+                createdAt: sortBy,
+            },
         });
         res
             .status(200)

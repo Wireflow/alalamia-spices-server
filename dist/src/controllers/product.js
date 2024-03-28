@@ -54,17 +54,21 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.updateProduct = updateProduct;
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { page = 1, pageSize = 10 } = req.query;
+        const { page = 1, pageSize = 10, sort } = req.query;
         const { supplier } = req.query;
         const { skip, take } = (0, calculatePagination_1.default)({
             page: Number(page),
             pageSize: Number(pageSize),
         });
+        const sortBy = sort ? sort : "desc";
         const products = yield connection_1.default.product.findMany({
             take,
             skip,
             include: {
                 supplier: supplier ? true : false,
+            },
+            orderBy: {
+                createdAt: sortBy,
             },
         });
         res

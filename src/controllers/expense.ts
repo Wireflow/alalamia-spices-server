@@ -91,7 +91,7 @@ const deleteExpense = async (req: Request, res: Response) => {
 
 const getAllExpenses = async (req: Request, res: Response) => {
   try {
-    const { page = 1, pageSize = 10, from, to } = req.query;
+    const { page = 1, pageSize = 10, from, to, sort } = req.query;
 
     const { skip, take } = calculatePagination({
       page: Number(page),
@@ -107,10 +107,15 @@ const getAllExpenses = async (req: Request, res: Response) => {
       };
     }
 
+    const sortBy: Prisma.SortOrder = sort ? (sort as Prisma.SortOrder) : "desc";
+
     const expenses = await prisma.expense.findMany({
       where,
       take,
       skip,
+      orderBy: {
+        createdAt: sortBy,
+      },
     });
 
     res

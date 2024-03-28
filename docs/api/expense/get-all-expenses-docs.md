@@ -12,6 +12,7 @@
     - `pageSize`: Number of records per page.
     - `from`: Start date of the date range.
     - `to`: End date of the date range.
+    - `sort`: asc or desc order.
   - **Response**
     ```json
     {

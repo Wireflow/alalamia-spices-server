@@ -151,14 +151,18 @@ const getMemberByAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
 exports.getMemberByAddress = getMemberByAddress;
 const getAllMembers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { page = 1, pageSize = 10 } = req.query;
+        const { page = 1, pageSize = 10, sort } = req.query;
         const { skip, take } = (0, calculatePagination_1.default)({
             page: Number(page),
             pageSize: Number(pageSize),
         });
+        const sortBy = sort ? sort : "desc";
         const members = yield connection_1.default.member.findMany({
             take,
             skip,
+            orderBy: {
+                createdAt: sortBy,
+            },
         });
         res
             .status(200)

@@ -14,6 +14,7 @@
     - `products`: true or false, whether to include the products purchased in the transactions.
     - `from`: Start date of the date range.
     - `to`: End date of the date range.
+    - `sort`: asc or desc order.
   - **Response**
     ```json
     {

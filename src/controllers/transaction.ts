@@ -6,7 +6,14 @@ import calculatePagination from "../utils/calculatePagination";
 
 const getAllTransactions = async (req: Request, res: Response) => {
   try {
-    const { products, page = 1, pageSize = 10, from, to } = req.query;
+    const {
+      products,
+      page = 1,
+      pageSize = 10,
+      from,
+      to,
+      sort = "desc",
+    } = req.query;
 
     const { skip, take } = calculatePagination({
       page: Number(page),
@@ -22,6 +29,8 @@ const getAllTransactions = async (req: Request, res: Response) => {
       };
     }
 
+    const sortBy: Prisma.SortOrder = sort ? (sort as Prisma.SortOrder) : "desc";
+
     const transactions = await prisma.transaction.findMany({
       where,
       take,
@@ -29,9 +38,10 @@ const getAllTransactions = async (req: Request, res: Response) => {
       include: {
         purchasedProducts: products ? true : false,
       },
+      orderBy: {
+        createdAt: sortBy,
+      },
     });
-
-    console.log(transactions);
 
     res
       .status(200)

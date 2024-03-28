@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../prisma/connection";
 import { SupplierSchema } from "../types/supplier";
 import { boolean } from "zod";
+import { Prisma } from "@prisma/client";
 
 const createSupplier = async (req: Request, res: Response) => {
   try {
@@ -49,10 +50,16 @@ const updateSupplier = async (req: Request, res: Response) => {
 
 const getAllSuppliers = async (req: Request, res: Response) => {
   try {
-    const { products } = req.query;
+    const { products, sort } = req.query;
+
+    const sortBy: Prisma.SortOrder = sort ? (sort as Prisma.SortOrder) : "desc";
+
     const suppliers = await prisma.supplier.findMany({
       include: {
         products: products ? true : false,
+      },
+      orderBy: {
+        createdAt: sortBy,
       },
     });
 

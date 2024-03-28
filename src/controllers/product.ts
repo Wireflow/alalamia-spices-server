@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ProductSchema } from "../types/product";
 import prisma from "../prisma/connection";
 import calculatePagination from "../utils/calculatePagination";
+import { Prisma } from "@prisma/client";
 
 const createProduct = async (req: Request, res: Response) => {
   try {
@@ -51,18 +52,23 @@ const updateProduct = async (req: Request, res: Response) => {
 
 const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const { page = 1, pageSize = 10 } = req.query;
+    const { page = 1, pageSize = 10, sort } = req.query;
     const { supplier } = req.query;
     const { skip, take } = calculatePagination({
       page: Number(page),
       pageSize: Number(pageSize),
     });
 
+    const sortBy: Prisma.SortOrder = sort ? (sort as Prisma.SortOrder) : "desc";
+
     const products = await prisma.product.findMany({
       take,
       skip,
       include: {
         supplier: supplier ? true : false,
+      },
+      orderBy: {
+        createdAt: sortBy,
       },
     });
 

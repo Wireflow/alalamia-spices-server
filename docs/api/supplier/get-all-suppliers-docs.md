@@ -10,6 +10,7 @@
     - `page`: Represents the current page number.
     - `pageSize`: Number of records per page.
     - `products`: true or false, whether to include the products of the supplier.
+    - `sort`: asc or desc order.
   - **Response**
     ```json
     {

@@ -6,6 +6,7 @@ import {
   MemberSchema,
 } from "../types/member";
 import calculatePagination from "../utils/calculatePagination";
+import { Prisma } from "@prisma/client";
 
 const getMemberCount = async (req: Request, res: Response) => {
   try {
@@ -156,15 +157,20 @@ const getMemberByAddress = async (req: Request, res: Response) => {
 
 const getAllMembers = async (req: Request, res: Response) => {
   try {
-    const { page = 1, pageSize = 10 } = req.query;
+    const { page = 1, pageSize = 10, sort } = req.query;
     const { skip, take } = calculatePagination({
       page: Number(page),
       pageSize: Number(pageSize),
     });
 
+    const sortBy: Prisma.SortOrder = sort ? (sort as Prisma.SortOrder) : "desc";
+
     const members = await prisma.member.findMany({
       take,
       skip,
+      orderBy: {
+        createdAt: sortBy,
+      },
     });
 
     res

@@ -18,7 +18,7 @@ const transaction_1 = require("../types/transaction");
 const calculatePagination_1 = __importDefault(require("../utils/calculatePagination"));
 const getAllTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { products, page = 1, pageSize = 10, from, to } = req.query;
+        const { products, page = 1, pageSize = 10, from, to, sort = "desc", } = req.query;
         const { skip, take } = (0, calculatePagination_1.default)({
             page: Number(page),
             pageSize: Number(pageSize),
@@ -30,6 +30,7 @@ const getAllTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 lte: new Date(to.toString() + "T23:59:59Z"),
             };
         }
+        const sortBy = sort ? sort : "desc";
         const transactions = yield connection_1.default.transaction.findMany({
             where,
             take,
@@ -37,8 +38,10 @@ const getAllTransactions = (req, res) => __awaiter(void 0, void 0, void 0, funct
             include: {
                 purchasedProducts: products ? true : false,
             },
+            orderBy: {
+                createdAt: sortBy,
+            },
         });
-        console.log(transactions);
         res
             .status(200)
             .json({ message: "Transactions got successfully", data: transactions });
